@@ -42,6 +42,33 @@ func (m *CivoCluster) ClusterShow(ctx context.Context,
 		Stdout(ctx)
 }
 
+// example usage: "dagger call cluster-create --api-token <env var name> --region <region> --name <cluster name> --node-count <node count> --node-size <node size> --version <cluster version>"
+func (m *CivoCluster) ClusterCreate(ctx context.Context,
+	apiToken *Secret,
+	// the region in which the new cluster should reside
+	region string,
+	// the name of the cluster
+	name string,
+	// +optional
+	// +default="3"
+	// the number of nodes to create (the master also acts as a node)
+	nodeCount string,
+	// +optional
+	// +default="g4s.kube.medium"
+	// the size of nodes to create. You can list available kubernetes sizes by civo size list -s kubernetes
+	nodeSize string,
+	// +optional
+	// +default="latest"
+	// the k3s version to use on the cluster. Defaults to the latest. Example - '--version 1.21.2+k3s1'
+	version string,
+) (string, error) {
+	c := civoContainer(apiToken)
+	return c.
+		WithEnvVariable("CACHE_BUSTER", time.Now().String()).
+		WithExec([]string{"k3s", "create", name, "--region", region, "--nodes", nodeCount, "--size", nodeSize, "--version", version, "--wait"}).
+		Stdout(ctx)
+}
+
 // example usage: "dagger call version"
 func (m *CivoCluster) Version(ctx context.Context) (string, error) {
 	c := civoContainer(nil)
