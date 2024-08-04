@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	civoVersion = "1.0.75"
+	civoVersion = "1.0.88"
 )
 
 type CivoCluster struct{}
 
-// example usage: "dagger call cluster-list --api-key <env var name> --region <region>"
+// example usage: "dagger call cluster-list --api-token <env var name> --region <region>"
 func (m *CivoCluster) ClusterList(ctx context.Context,
 	// apiKey API key used to against the Civo API. Found at https://dashboard.civo.com/account/api
 	apiToken *Secret,
@@ -29,7 +29,7 @@ func (m *CivoCluster) ClusterList(ctx context.Context,
 		Stdout(ctx)
 }
 
-// example usage: "dagger call cluster-show --api-key <env var name> --region <region> --name <cluster name from cluster-list>"
+// example usage: "dagger call cluster-show --api-token <env var name> --region <region> --name <cluster name from cluster-list>"
 func (m *CivoCluster) ClusterShow(ctx context.Context,
 	apiToken *Secret,
 	region string,
